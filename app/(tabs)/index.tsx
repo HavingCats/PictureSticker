@@ -20,7 +20,7 @@ export default function Index() {
   const [selectedImage, setSelectedImage] = useState<string | undefined>(undefined);
   const [showAppOptions, setShowAppOptions] = useState<boolean>(false);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-  const [pickedEmoji, setPickedEmoji] = useState<ImageSourcePropType | undefined>(undefined);
+  const [stickers, setStickers] = useState<ImageSourcePropType[]>([]);
   const [permissionResponse, requestPermission] = MediaLibrary.usePermissions();
 
   const imageRef = useRef<View>(null);
@@ -42,6 +42,7 @@ export default function Index() {
 
     if (!result.canceled) {
       setSelectedImage(result.assets[0].uri);
+      setStickers([]); // 新图片对应新的贴纸列表，清空之前的
       setShowAppOptions(true);
     } else {
       alert('You did not select any image.');
@@ -50,6 +51,7 @@ export default function Index() {
 
   const onReset = () => {
     setShowAppOptions(false);
+    setStickers([]);
   };
 
 
@@ -100,7 +102,13 @@ export default function Index() {
       <View style={styles.imageContainer}>
         <View ref={imageRef} collapsable={false}>
           <ImageViewer imgSource={PlaceholderImage} selectedImage={selectedImage} />
-          {pickedEmoji && <EmojiSticker imageSize={40} stickerSource={pickedEmoji} />}
+          {stickers.map((stickerSource, index) => (
+            <EmojiSticker
+              key={index}
+              imageSize={40}
+              stickerSource={stickerSource}
+            />
+          ))}
         </View>
       </View>
       {showAppOptions ? (
@@ -118,7 +126,7 @@ export default function Index() {
         </View>
       )}
       <EmojiPicker isVisible={isModalVisible} onClose={onModalClose}>
-        <EmojiList onSelect={setPickedEmoji} onCloseModal={onModalClose} />
+        <EmojiList onSelect={(emoji) => setStickers((prev) => [...prev, emoji])} onCloseModal={onModalClose} />
       </EmojiPicker>
     </GestureHandlerRootView>
   );

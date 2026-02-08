@@ -2,6 +2,9 @@ import { ImageSourcePropType } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
+const IMAGE_WIDTH = 320;
+const IMAGE_HEIGHT = 440;
+
 type Props = {
   imageSize: number;
   stickerSource: ImageSourcePropType;
@@ -11,6 +14,9 @@ export default function EmojiSticker({ imageSize, stickerSource }: Props) {
   const scaleImage = useSharedValue(imageSize);
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
+
+  const centerLeft = (IMAGE_WIDTH - imageSize) / 2;
+  const centerTop = (IMAGE_HEIGHT - imageSize) / 2;
 
   const doubleTap = Gesture.Tap()           // 创建点击手势
   .numberOfTaps(2)                        // 设置为双击（2次点击）
@@ -50,7 +56,7 @@ export default function EmojiSticker({ imageSize, stickerSource }: Props) {
 
   return (
     <GestureDetector gesture={drag}>
-    <Animated.View style={[containerStyle, { top: -350 }]}>
+    <Animated.View style={[containerStyle, { position: 'absolute', left: centerLeft, top: centerTop }]}>
       <GestureDetector gesture={doubleTap}>
         <Animated.Image
           source={stickerSource}
