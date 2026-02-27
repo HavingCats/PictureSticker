@@ -104,7 +104,7 @@ export default function Index() {
           <ImageViewer imgSource={PlaceholderImage} selectedImage={selectedImage} />
           {stickers.map((stickerSource, index) => (
             <EmojiSticker
-              key={index}
+              key={index}  //组件不会把 key 当作 props 的一部分。Key 的存在只对 React 本身起到提示作用。
               imageSize={40}
               stickerSource={stickerSource}
             />
